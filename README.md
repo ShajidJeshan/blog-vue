@@ -1,2 +1,2 @@
 # todo-vue
-A simple todo app using vue.js and FastAPI
+A simple blog app using vue.js and FastAPI
