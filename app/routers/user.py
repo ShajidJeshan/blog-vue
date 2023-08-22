@@ -26,7 +26,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=UserShow)
 def user_create(req: UserBase, db: Session = Depends(get_db)):
-    payload = req.dict()
+    payload = req.model_dump()
     payload["password"] = pwd_context.hash(req.password)
     user = db.query(models.User).filter(models.User.email == payload["email"]).first()
     if user:
@@ -56,7 +56,7 @@ def user_update(id: int, req: UserBase, db: Session = Depends(get_db), user=Depe
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Email already exists"
             )
-    payload = req.dict()
+    payload = req.model_dump()
     if req.password:
         payload["password"] = pwd_context.hash(req.password)
     user.update(payload, synchronize_session=False)
