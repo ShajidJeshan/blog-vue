@@ -25,6 +25,7 @@ This project aims to create a basic blog application where users can log in, cre
 - [ ] Docker-compose
 - [ ] Microservice Architecture
 - [ ] Deployment
+- [ ] CI/CD probably GitHub Actions
 - [ ] ... (more tasks)
 
 ## Frontend Checklist
