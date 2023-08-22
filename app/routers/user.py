@@ -18,6 +18,7 @@ router = APIRouter(
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+#Command for generating secret key "openssl rand -hex 32"
 SECRET_KEY = "e007c5f110800d63681cd19e974af485c9193fd5d2016eccb4bd66a4bfbd734d"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
