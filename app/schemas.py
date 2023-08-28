@@ -5,6 +5,7 @@ class UserBase(BaseModel):
     email: EmailStr
     username: str
     password: str
+    profile_pic: str
 
 
 class UserLogin(BaseModel):
@@ -15,6 +16,7 @@ class UserLogin(BaseModel):
 class UserShow(BaseModel):
     email: EmailStr
     username: str
+    profile_pic: str
 
     class Config:
         from_attributes = True
@@ -23,7 +25,6 @@ class UserShow(BaseModel):
 class PostBase(BaseModel):
     title: str
     body: str
-    user_id: int
 
 
 class PostCreate(BaseModel):

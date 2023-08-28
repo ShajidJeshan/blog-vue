@@ -13,8 +13,10 @@ This project aims to create a basic blog application where users can log in, cre
 - [x] User Authentication
 - [x] User API
 - [x] Post API
-- [ ] Alembic (Database Migrations)
-- [ ] Aiohttp (HTTP Client/Server) for maybe Messaging
+- [x] Alembic (Database Migrations)
+- [ ] Aiohttp (HTTP Client/Server)
+- [ ] Notification
+- [ ] Message
 - [ ] Comment API
 - [ ] Like Option
 - [ ] Follow Other Users
@@ -23,6 +25,7 @@ This project aims to create a basic blog application where users can log in, cre
 - [ ] Add photo for blogs
 - [ ] Docker File
 - [ ] Docker-compose
+- [ ] Pytest
 - [ ] Microservice Architecture
 - [ ] Deployment
 - [ ] CI/CD probably GitHub Actions

@@ -1,5 +1,6 @@
 from fastapi import APIRouter, status, Depends, HTTPException
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from typing import Annotated
 from ..database import get_db
 from ..schemas import UserBase, UserShow, Token
@@ -79,7 +80,7 @@ def user_delete(id: int, db: Session = Depends(get_db), user=Depends(get_current
 
 
 @router.post("/login", status_code=status.HTTP_201_CREATED, response_model=Token)
-def login(payload: Annotated[OAuth2PasswordRequestForm, Depends()], db: Session = Depends(get_db)):
+def login(payload: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.email == payload.username).first()
     if not user:
         raise HTTPException(
@@ -95,4 +96,5 @@ def login(payload: Annotated[OAuth2PasswordRequestForm, Depends()], db: Session 
     expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode = {"sub": user.email, "exp": expire}
     access_token = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    print(to_encode)
     return {"access_token": access_token, "token_type": "bearer"}

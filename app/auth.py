@@ -3,6 +3,7 @@ from jose import JWTError, jwt
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from .database import get_db
+from .schemas import TokenData
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="user/login")
@@ -13,7 +14,7 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
 
-async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+async def get_current_user(token: str = Depends(oauth2_scheme)):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         email: str = payload.get("sub")
@@ -23,6 +24,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = De
                 detail="Could not validate credentials",
                 headers={"WWW-Authenticate": "Bearer"}
                 )
+        token_data = TokenData(email=email)
         return {"email": email}
     except JWTError:
         raise HTTPException(

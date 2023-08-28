@@ -1,3 +1,4 @@
+alembic==1.11.3
 annotated-types==0.5.0
 anyio==3.7.1
 apturl==0.5.2
