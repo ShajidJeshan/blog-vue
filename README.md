@@ -17,7 +17,7 @@ This project aims to create a basic blog application where users can log in, cre
 - [ ] Aiohttp (HTTP Client/Server)
 - [ ] Notification
 - [ ] Message
-- [ ] Comment API
+- [x] Comment API
 - [ ] Like Option
 - [ ] Follow Other Users
 - [ ] Blog Feed
