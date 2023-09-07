@@ -35,8 +35,8 @@ class Comment(Base):
 
     id = Column(Integer, primary_key=True, nullable=False)
     user_id = Column(Integer, ForeignKey('users.id', ondelete="CASCADE"), nullable=False)
-    post_id = Column(Integer, ForeignKey('posts.id', ondelete="CASCADE"), nullable=False, onupdate=text('now()'))
-    Content = Column(String, nullable=False)
+    post_id = Column(Integer, ForeignKey('posts.id', ondelete="CASCADE"), nullable=False)
+    content = Column(String, nullable=False)
 
     user = relationship("User")
 

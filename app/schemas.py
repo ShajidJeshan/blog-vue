@@ -1,4 +1,5 @@
 from pydantic import BaseModel, EmailStr
+from datetime import datetime
 
 
 class UserBase(BaseModel):
@@ -54,3 +55,16 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     email: EmailStr
+
+
+class CommentData(BaseModel):
+    content: str
+
+
+class CommentShow(CommentData):
+    id: int
+    user: UserShow
+    created_at: datetime
+
+    class cofig:
+        form_attribute = True

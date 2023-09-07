@@ -44,8 +44,8 @@ def user_create(req: UserBase, db: Session = Depends(get_db)):
 
 @router.put("/update/{id}", status_code=status.HTTP_200_OK, response_model=UserShow)
 def user_update(id: int, req: UserBase, db: Session = Depends(get_db), user=Depends(get_current_user)):
-    user = db.query(models.User).filter(models.User.id == id)
-    first_user = user.first()
+    user_query = db.query(models.User).filter(models.User.id == id)
+    first_user = user_query.first()
     if not first_user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

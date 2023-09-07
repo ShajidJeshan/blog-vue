@@ -15,7 +15,7 @@ router = APIRouter(
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=PostCreate)
 def create_post(req: PostBase, db: Session = Depends(get_db), user=Depends(get_current_user)):
     user_query = db.query(models.User).filter(models.User.email == user["email"]).first()
-    new_post = models.Post(**req.dict(), user_id=user_query.id)
+    new_post = models.Post(**req.model_dump(), user_id=user_query.id)
     db.add(new_post)
     db.commit()
     db.refresh(new_post)
@@ -54,7 +54,7 @@ def put_post(id: int, req: PostBase, db: Session = Depends(get_db), user=Depends
             detail=f"Post with id. {id} not found"
             )
 
-    post.update(req.dict(), synchronize_session=False)
+    post.update(req.model_dump(), synchronize_session=False)
     db.commit()
     db.refresh(first_post)
     return first_post
