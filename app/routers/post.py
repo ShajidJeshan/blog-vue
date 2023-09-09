@@ -48,12 +48,17 @@ def get_specific_post(id: int, db: Session = Depends(get_db), user=Depends(get_c
 def put_post(id: int, req: PostBase, db: Session = Depends(get_db), user=Depends(get_current_user)):
     post = db.query(models.Post).filter(models.Post.id == id)
     first_post = post.first()
+    user_id = db.query(models.User). filter(models.User.email == user["email"]).first().id
     if not first_post:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Post with id. {id} not found"
             )
-
+    if not user_id == first_post.user_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Unauthorized"
+            )
     post.update(req.model_dump(), synchronize_session=False)
     db.commit()
     db.refresh(first_post)
@@ -62,12 +67,19 @@ def put_post(id: int, req: PostBase, db: Session = Depends(get_db), user=Depends
 
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_post(id: int, db: Session = Depends(get_db), user=Depends(get_current_user)):
-    post = db.query(models.Post).filter(models.Post.id == id)
-    if not post.first():
+    post_query = db.query(models.Post).filter(models.Post.id == id)
+    post = post_query.first()
+    user_id = db.query(models.User). filter(models.User.email == user["email"]).first().id
+    if not post:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Post with id. {id} not found"
             )
-    post.delete(synchronize_session=False)
+    if not user_id == post.user_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Unauthorized"
+            )
+    post_query.delete(synchronize_session=False)
     db.commit()
     return None

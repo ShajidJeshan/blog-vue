@@ -11,7 +11,7 @@ class Post(Base):
     body = Column(String, nullable=False)
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
 
-    user = relationship("User") 
+    user = relationship("User")
 
     created_at = Column(DateTime(timezone=True), server_default=text('now()'), nullable=False)
     updated_at = Column(DateTime(timezone=True), server_default=text('now()'), onupdate=text('now()'), nullable=False)

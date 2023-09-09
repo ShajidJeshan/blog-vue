@@ -18,6 +18,13 @@ This project aims to create a basic blog application where users can log in, cre
 - [ ] Notification
 - [ ] Message
 - [x] Comment API
+- [x] Delete comment by comment owner
+- [x] Update comment by comment owner
+- [x] Delete comment by post owner
+- [x] Delete post by post owner
+- [x] Update post by post owner
+- [x] Update account by account owner
+- [x] Delete account by account owner
 - [ ] Like Option
 - [ ] Follow Other Users
 - [ ] Blog Feed

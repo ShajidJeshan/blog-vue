@@ -42,25 +42,31 @@ def user_create(req: UserBase, db: Session = Depends(get_db)):
     return user
 
 
-@router.put("/update/{id}", status_code=status.HTTP_200_OK, response_model=UserShow)
+@router.put("/update/{id}/", status_code=status.HTTP_200_OK, response_model=UserShow)
 def user_update(id: int, req: UserBase, db: Session = Depends(get_db), user=Depends(get_current_user)):
     user_query = db.query(models.User).filter(models.User.id == id)
     first_user = user_query.first()
+    update_check = db.query(models.User).filter(models.User.email == req.email).first()
+    user_id = db.query(models.User).filter(models.User.email == user["email"]).first().id
     if not first_user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"User of id. {id} not found"
             )
-    update_check = db.query(models.User).filter(models.User.email == req.email).first()
-    if update_check:
+    if update_check and user_id != id:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Email already exists"
             )
+    if not user_id == id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Unauthorized"
+            )
     payload = req.model_dump()
     if req.password:
         payload["password"] = pwd_context.hash(req.password)
-    user.update(payload, synchronize_session=False)
+    user_query.update(payload, synchronize_session=False)
     db.commit()
     db.refresh(first_user)
     return first_user
@@ -68,13 +74,19 @@ def user_update(id: int, req: UserBase, db: Session = Depends(get_db), user=Depe
 
 @router.delete("/delete/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def user_delete(id: int, db: Session = Depends(get_db), user=Depends(get_current_user)):
-    user = db.query(models.User).filter(models.User.id == id)
-    if not user.first():
+    user_query = db.query(models.User).filter(models.User.id == id)
+    first_user = user_query.first()
+    if not first_user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"User of id. {id} not found"
             )
-    user.delete(synchronize_session=False)
+    if not first_user.email == user["email"]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Unauthorized"
+            )
+    user_query.delete(synchronize_session=False)
     db.commit()
     return None
 

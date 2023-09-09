@@ -64,12 +64,20 @@ def update_comment(req: CommentData, id: int, db: Session = Depends(get_db), use
 
 @router.delete("/delete/", status_code=status.HTTP_204_NO_CONTENT)
 def comment_del(id: int, db: Session = Depends(get_db), user=Depends(get_current_user)):
-    comment = db.query(models.Comment).filter(models.Comment.id == id)
-    if not comment.first():
+    comment_query = db.query(models.Comment).filter(models.Comment.id == id)
+    comment = comment_query.first()
+    user_id = db.query(models.User).filter(models.User.email == user["email"]).first().id
+    post_user_id = db.query(models.Post).filter(models.Post.id == comment.post_id).first().user_id
+    if not comment:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Comment doesn't exist"
             )
-    comment.delete(synchronize_session=False)
+    if not (user_id == post_user_id or user_id == comment.user_id):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Unauthorized"
+            )
+    comment_query.delete(synchronize_session=False)
     db.commit()
     return None
