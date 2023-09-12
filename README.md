@@ -14,9 +14,6 @@ This project aims to create a basic blog application where users can log in, cre
 - [x] User API
 - [x] Post API
 - [x] Alembic (Database Migrations)
-- [ ] Aiohttp (HTTP Client/Server)
-- [ ] Notification
-- [ ] Message
 - [x] Comment API
 - [x] Delete comment by comment owner
 - [x] Update comment by comment owner
@@ -25,8 +22,12 @@ This project aims to create a basic blog application where users can log in, cre
 - [x] Update post by post owner
 - [x] Update account by account owner
 - [x] Delete account by account owner
+- [ ] Search Feature
 - [ ] Like Option
 - [ ] Follow Other Users
+- [ ] Aiohttp (HTTP Client/Server)
+- [ ] Notification
+- [ ] Message
 - [ ] Blog Feed
 - [ ] User Profile Pictures
 - [ ] Add photo for blogs
