@@ -47,18 +47,17 @@ def user_update(id: int, req: UserBase, db: Session = Depends(get_db), user=Depe
     user_query = db.query(models.User).filter(models.User.id == id)
     first_user = user_query.first()
     update_check = db.query(models.User).filter(models.User.email == req.email).first()
-    user_id = db.query(models.User).filter(models.User.email == user["email"]).first().id
     if not first_user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"User of id. {id} not found"
             )
-    if update_check and user_id != id:
+    if update_check and first_user.email == user["email"]:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Email already exists"
             )
-    if not user_id == id:
+    if not first_user.email == user["email"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Unauthorized"
