@@ -7,3 +7,6 @@ py3env/
 # Ignore editor-specific files
 *.swp
 .vscode/
+
+#Ignore image files
+images/

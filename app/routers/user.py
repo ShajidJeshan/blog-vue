@@ -1,7 +1,5 @@
-from fastapi import APIRouter, status, Depends, HTTPException
+from fastapi import APIRouter, status, Depends, HTTPException, UploadFile
 from sqlalchemy.orm import Session
-from sqlalchemy import func
-from typing import Annotated
 from ..database import get_db
 from ..schemas import UserBase, UserShow, Token
 from .. import models
@@ -10,6 +8,8 @@ from passlib.context import CryptContext
 from datetime import datetime, timedelta
 from ..auth import get_current_user
 from fastapi.security import OAuth2PasswordRequestForm
+import os
+import shutil
 
 
 router = APIRouter(
@@ -19,7 +19,7 @@ router = APIRouter(
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-#Command for generating secret key "openssl rand -hex 32"
+# Command for generating secret key "openssl rand -hex 32"
 SECRET_KEY = "e007c5f110800d63681cd19e974af485c9193fd5d2016eccb4bd66a4bfbd734d"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
@@ -109,3 +109,36 @@ def login(payload: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(
     access_token = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     print(to_encode)
     return {"access_token": access_token, "token_type": "bearer"}
+
+
+IMAGEDIR = "images/users/"
+
+
+@router.post("/profile-pic/", status_code=status.HTTP_201_CREATED)
+async def user_profile_pic(file: UploadFile, db: Session = Depends(get_db), user=Depends(get_current_user)):
+    file.file.seek(0, 2)
+    file_size = file.file.tell()
+    await file.seek(0)
+    if file_size > 2 * 1024 * 1024:
+        raise HTTPException(status_code=400, detail="File too large")
+
+    content_type = file.content_type
+
+    if content_type not in ["image/jpeg", "image/png", "image/gif", "image/webp"]:
+        raise HTTPException(status_code=400, detail="Invalid file type")
+
+    user_query = db.query(models.User).filter(models.User.email == user["email"])
+    first_user = user_query.first()
+    user_id = first_user.id
+    suffix = file.filename.split(".")[-1]
+    file.filename = f"{user_id}.{suffix}"
+    upload_dir = os.path.join(os.getcwd(), IMAGEDIR)
+    if not os.path.exists(upload_dir):
+        os.makedirs(upload_dir)
+    dest = os.path.join(upload_dir, file.filename)
+    with open(dest, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    first_user.profile_pic = dest
+    db.commit()
+    return {"filename": file.filename}

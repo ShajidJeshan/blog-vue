@@ -22,6 +22,7 @@ This project aims to create a basic blog application where users can log in, cre
 - [x] Update post by post owner
 - [x] Update account by account owner
 - [x] Delete account by account owner
+- [x] User Profile Pictures
 - [ ] Search Feature
 - [ ] Like Option
 - [ ] Follow Other Users
@@ -29,8 +30,8 @@ This project aims to create a basic blog application where users can log in, cre
 - [ ] Notification
 - [ ] Message
 - [ ] Blog Feed
-- [ ] User Profile Pictures
 - [ ] Add photo for blogs
+- [ ] Caching
 - [ ] Docker File
 - [ ] Docker-compose
 - [ ] Pytest
