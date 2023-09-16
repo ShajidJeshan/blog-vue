@@ -9,7 +9,8 @@ from datetime import datetime, timedelta
 from ..auth import get_current_user
 from fastapi.security import OAuth2PasswordRequestForm
 import os
-import shutil
+# import shutil
+from PIL import Image
 
 
 router = APIRouter(
@@ -99,7 +100,6 @@ def login(payload: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(
             detail="Incorrect Credentials"
         )
     if not pwd_context.verify(payload.password, user.password):
-        print(pwd_context.verify(payload.password, user.password))
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Incorrect Credentials"
@@ -107,7 +107,6 @@ def login(payload: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(
     expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode = {"sub": user.email, "exp": expire}
     access_token = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    print(to_encode)
     return {"access_token": access_token, "token_type": "bearer"}
 
 
@@ -124,20 +123,21 @@ async def user_profile_pic(file: UploadFile, db: Session = Depends(get_db), user
 
     content_type = file.content_type
 
-    if content_type not in ["image/jpeg", "image/png", "image/gif", "image/webp"]:
+    if content_type not in ["image/jpeg", "image/png"]:
         raise HTTPException(status_code=400, detail="Invalid file type")
 
     user_query = db.query(models.User).filter(models.User.email == user["email"])
     first_user = user_query.first()
     user_id = first_user.id
-    suffix = file.filename.split(".")[-1]
-    file.filename = f"{user_id}.{suffix}"
+    file.filename = f"{user_id}.webp"
     upload_dir = os.path.join(os.getcwd(), IMAGEDIR)
     if not os.path.exists(upload_dir):
         os.makedirs(upload_dir)
     dest = os.path.join(upload_dir, file.filename)
-    with open(dest, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
+    image = Image.open(file.file)
+    image.save(dest, format="webp")
+    # with open(dest, "wb") as buffer:
+    #     shutil.copyfileobj(file.file, buffer)
 
     first_user.profile_pic = dest
     db.commit()

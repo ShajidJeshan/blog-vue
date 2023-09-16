@@ -22,7 +22,8 @@ This project aims to create a basic blog application where users can log in, cre
 - [x] Update post by post owner
 - [x] Update account by account owner
 - [x] Delete account by account owner
-- [x] User Profile Pictures
+- [x] User Profile Pictures upload
+- [x] User Profile Pictures convert to webp when uploaded
 - [ ] Search Feature
 - [ ] Like Option
 - [ ] Follow Other Users
