@@ -10,6 +10,7 @@ class Post(Base):
     title = Column(String, nullable=False)
     body = Column(String, nullable=False)
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    blog_media = Column(String, nullable=True, server_default=None)
 
     user = relationship("User")
 

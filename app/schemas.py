@@ -31,6 +31,7 @@ class PostBase(BaseModel):
 class PostCreate(BaseModel):
     title: str
     body: str
+    blog_media: str | None
     user: UserShow
 
     class Config:

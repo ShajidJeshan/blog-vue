@@ -72,7 +72,7 @@ def user_update(id: int, req: UserBase, db: Session = Depends(get_db), user=Depe
     return first_user
 
 
-@router.delete("/delete/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/delete/{id}/", status_code=status.HTTP_204_NO_CONTENT)
 def user_delete(id: int, db: Session = Depends(get_db), user=Depends(get_current_user)):
     user_query = db.query(models.User).filter(models.User.id == id)
     first_user = user_query.first()
@@ -91,7 +91,7 @@ def user_delete(id: int, db: Session = Depends(get_db), user=Depends(get_current
     return None
 
 
-@router.post("/login", status_code=status.HTTP_201_CREATED, response_model=Token)
+@router.post("/login/", status_code=status.HTTP_201_CREATED, response_model=Token)
 def login(payload: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.email == payload.username).first()
     if not user:

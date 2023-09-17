@@ -24,6 +24,7 @@ This project aims to create a basic blog application where users can log in, cre
 - [x] Delete account by account owner
 - [x] User Profile Pictures upload
 - [x] User Profile Pictures convert to webp when uploaded
+- [x] Add photo for blogs
 - [ ] Search Feature
 - [ ] Like Option
 - [ ] Follow Other Users
@@ -31,7 +32,6 @@ This project aims to create a basic blog application where users can log in, cre
 - [ ] Notification
 - [ ] Message
 - [ ] Blog Feed
-- [ ] Add photo for blogs
 - [ ] Caching
 - [ ] Docker File
 - [ ] Docker-compose
