@@ -142,3 +142,14 @@ async def user_profile_pic(file: UploadFile, db: Session = Depends(get_db), user
     first_user.profile_pic = dest
     db.commit()
     return {"filename": file.filename}
+
+
+@router.get("/{id}", status_code=status.HTTP_200_OK, response_model=UserShow)
+def get_user_data(id: int, db: Session = Depends(get_db), user= Depends(get_current_user)):
+    user_query = db.query(models.User).filter(models.User.id ==id).first()
+    if not user_query:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User doesn't exist"
+        )
+    return user_query

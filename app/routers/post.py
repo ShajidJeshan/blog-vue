@@ -35,7 +35,7 @@ def get_posts(user_id: int, db: Session = Depends(get_db), user=Depends(get_curr
     return post
 
 
-@router.get("/{id}/", status_code=status.HTTP_200_OK, response_model=PostCreate)
+@router.get("/specific/{id}/", status_code=status.HTTP_200_OK, response_model=PostCreate)
 def get_specific_post(id: int, db: Session = Depends(get_db), user=Depends(get_current_user)):
     post = db.query(models.Post).filter(models.Post.id == id).first()
     if not post:
@@ -121,3 +121,8 @@ async def post_media_upload(post_id: int, file: UploadFile, db: Session = Depend
     first_post.blog_media = dest
     db.commit()
     return {"filename": file.filename}
+
+
+# @router.get("/search/", status_code=status.HTTP_200_OK)
+# async def search_fun(key, db: Session = Depends(get_db)):
+#     # user, topic
