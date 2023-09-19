@@ -69,3 +69,14 @@ class CommentShow(CommentData):
 
     class cofig:
         form_attribute = True
+
+
+class FollowerShow(BaseModel):
+    user_id: int
+    follower_id: int
+    user: UserShow
+    follower: UserShow
+    created_at: datetime
+
+    class config:
+        form_attribute = True
