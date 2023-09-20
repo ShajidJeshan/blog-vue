@@ -57,6 +57,7 @@ class PostLike(Base):
     post_id = Column(Integer, ForeignKey('posts.id', ondelete="CASCADE"), nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=text('now()'), nullable=False)
 
+
 class CommentLike(Base):
     __tablename__ = "comment_likes"
 

@@ -25,10 +25,11 @@ This project aims to create a basic blog application where users can log in, cre
 - [x] User Profile Pictures upload
 - [x] User Profile Pictures convert to webp when uploaded
 - [x] Add photo for blogs
+- [x] Follower API
+- [ ] Email notification
 - [ ] Pagination
 - [ ] Search Feature
 - [ ] Like Option
-- [ ] Follow Other Users
 - [ ] Aiohttp (HTTP Client/Server)
 - [ ] Notification
 - [ ] Message

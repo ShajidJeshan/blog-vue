@@ -15,6 +15,7 @@ class UserLogin(BaseModel):
 
 
 class UserShow(BaseModel):
+    id: int
     email: EmailStr
     username: str
     profile_pic: str
@@ -74,8 +75,17 @@ class CommentShow(CommentData):
 class FollowerShow(BaseModel):
     user_id: int
     follower_id: int
-    user: UserShow
     follower: UserShow
+    created_at: datetime
+
+    class config:
+        form_attribute = True
+
+
+class FollowingShow(BaseModel):
+    user_id: int
+    follower_id: int
+    user: UserShow
     created_at: datetime
 
     class config:
