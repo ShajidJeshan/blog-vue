@@ -1,11 +1,13 @@
 from fastapi import APIRouter, status, Depends, HTTPException
-from typing import List
+# from typing import List
 from sqlalchemy import desc
 from sqlalchemy.orm import Session
 from ..database import get_db
 from ..schemas import CommentData, CommentShow
 from .. import models
 from ..auth import get_current_user
+from fastapi_pagination import Page, Params
+from fastapi_pagination.ext.sqlalchemy import paginate
 
 
 router = APIRouter(
@@ -30,17 +32,18 @@ def post_comment(req: CommentData, post_id: int, db: Session = Depends(get_db), 
     db.refresh(comment)
     return comment
 
-@router.get("/{post_id}/", status_code= status.HTTP_200_OK, response_model=List[CommentShow])
-def get_comment_by_id(post_id: int, db: Session = Depends(get_db)):
-    comment = db.query(models.Comment).filter(models.Comment.post_id == post_id).order_by(desc(models.Comment.created_at)).all()
-    if not comment:
+
+@router.get("/{post_id}/", status_code=status.HTTP_200_OK, response_model=Page[CommentShow])
+def get_comment_by_id(post_id: int, params: Params = Depends(), db: Session = Depends(get_db)):
+    comment = db.query(models.Comment).filter(models.Comment.post_id == post_id).order_by(desc(models.Comment.created_at))
+    if not comment.first():
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Comment doesn't exist"
             )
-    return comment
+    return paginate(comment, params)
 
-  
+
 @router.put("/update/", status_code=status.HTTP_200_OK, response_model=CommentShow)
 def update_comment(req: CommentData, id: int, db: Session = Depends(get_db), user=Depends(get_current_user)):
     comment_query = db.query(models.Comment).filter(models.Comment.id == id)

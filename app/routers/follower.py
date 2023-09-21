@@ -1,11 +1,13 @@
 from fastapi import APIRouter, status, Depends, HTTPException, Response
-from typing import List
+# from typing import List
 from sqlalchemy import and_
 from sqlalchemy.orm import Session
 from ..database import get_db
 from ..schemas import FollowerShow, FollowingShow
 from .. import models
 from ..auth import get_current_user
+from fastapi_pagination import Page, Params
+from fastapi_pagination.ext.sqlalchemy import paginate
 
 
 router = APIRouter(
@@ -31,25 +33,25 @@ def add_follower(user_id: int, db: Session = Depends(get_db), user=Depends(get_c
     return follower
 
 
-@router.get("/all-followers/", status_code=status.HTTP_200_OK, response_model=List[FollowerShow])
-def get_all_follower(id: int, db: Session = Depends(get_db), user=Depends(get_current_user)):
+@router.get("/all-followers/", status_code=status.HTTP_200_OK, response_model=Page[FollowerShow])
+def get_all_follower(id: int, params: Params = Depends(), db: Session = Depends(get_db), user=Depends(get_current_user)):
     # user_id = db.query(models.User).filter(models.User.email == user["email"]).first().id
-    follower = db.query(models.Follower).filter(models.Follower.user_id == id).all()
-    if not follower:
+    follower = db.query(models.Follower).filter(models.Follower.user_id == id)
+    if not follower.first():
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="follower doesn't exist"
             )
-    return follower
+    return paginate(follower, params)
 
 
-@router.get("/all-following/", status_code=status.HTTP_200_OK, response_model=List[FollowingShow])
-def get_all_following(id: int, db: Session = Depends(get_db), user=Depends(get_current_user)):
+@router.get("/all-following/", status_code=status.HTTP_200_OK, response_model=Page[FollowingShow])
+def get_all_following(id: int, params: Params = Depends(), db: Session = Depends(get_db), user=Depends(get_current_user)):
     # user_id = db.query(models.User).filter(models.User.email == user["email"]).first().id
-    following = db.query(models.Follower).filter(models.Follower.follower_id == id).all()
-    if not following:
+    following = db.query(models.Follower).filter(models.Follower.follower_id == id)
+    if not following.first():
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Not following anyone"
             )
-    return following
+    return paginate(following, params)

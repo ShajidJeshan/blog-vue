@@ -1,5 +1,5 @@
 from fastapi import APIRouter, status, Depends, HTTPException, UploadFile
-from typing import List
+# from typing import List
 from sqlalchemy.orm import Session
 from ..database import get_db
 from ..schemas import PostBase, PostCreate, PostShow
@@ -7,6 +7,9 @@ from .. import models
 from ..auth import get_current_user
 import os
 from PIL import Image
+from fastapi_pagination import Page, Params
+from fastapi_pagination.ext.sqlalchemy import paginate
+
 
 router = APIRouter(
     prefix="/posts",
@@ -24,15 +27,15 @@ def create_post(req: PostBase, db: Session = Depends(get_db), user=Depends(get_c
     return new_post
 
 
-@router.get("/{user_id}/", status_code=status.HTTP_200_OK, response_model=List[PostShow])
-def get_posts(user_id: int, db: Session = Depends(get_db), user=Depends(get_current_user)):
-    post = db.query(models.Post).filter(models.Post.user_id == user_id).all()
-    if not post:
+@router.get("/{user_id}/", status_code=status.HTTP_200_OK, response_model=Page[PostShow])
+def get_posts(user_id: int, params: Params = Depends(), db: Session = Depends(get_db), user=Depends(get_current_user)):
+    post = db.query(models.Post).filter(models.Post.user_id == user_id)
+    if not post.first():
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Post not found"
             )
-    return post
+    return paginate(post, params)
 
 
 @router.get("/specific/{id}/", status_code=status.HTTP_200_OK, response_model=PostCreate)
