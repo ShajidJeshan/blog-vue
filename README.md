@@ -27,6 +27,7 @@ This project aims to create a basic blog application where users can log in, cre
 - [x] Add photo for blogs
 - [x] Follower API
 - [x] Pagination
+- [x] Handle CORS issue
 - [ ] Email notification
 - [ ] Search Feature
 - [ ] Like Option
